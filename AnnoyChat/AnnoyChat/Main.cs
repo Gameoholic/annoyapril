@@ -373,7 +373,7 @@ namespace AnnoyChat
                 registeredUsers.Add(userID, displayName);
             }
             Random rnd = new Random();
-            foreach (var key in registeredUsers.Keys)
+            foreach (var key in registeredUsers.Keys.ToList())
             {
                 registeredUsers[key] = registeredUsers.Values.ToList()[rnd.Next(registeredUsers.Values.Count())];
             }
