@@ -1,0 +1,1 @@
+[10:36:50] WARNING: Please provide your Discord Bot token in _config.yml
