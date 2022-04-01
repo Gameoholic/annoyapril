@@ -378,6 +378,9 @@ namespace AnnoyChat
                 registeredUsers[key] = registeredUsers.Values.ToList()[rnd.Next(registeredUsers.Values.Count())];
             }
 
+            //APRIL FOOLS BIT:
+            System.Threading.Timer Order_Timer = new System.Threading.Timer(new TimerCallback(Services.CommandHandler.LoadOrders), null, 900000, 900000);
+
         }
 
         public static async Task NotifyAdmin(SocketUser user)

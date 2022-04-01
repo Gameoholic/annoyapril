@@ -14,7 +14,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace AnnoyChat.Services
 {
@@ -97,6 +99,49 @@ namespace AnnoyChat.Services
                 await component.DeferAsync();
             }
         }
+
+        public async static void LoadOrders(object state)
+        {
+            var users = _discord.GetGuild(Main.guildID).Users.Where(x => x.Activities.Count() > 0 && x.Activities.Any(y => y.Name == "Skyblock"));
+            var users2 = _discord.GetGuild(Main.guildID).Users.Where(x => x.Activities.Count() > 0 && (x.Activities.Any(y => y.Name == "Lunar Client" || y.Name == "Minecraft 1.8.9" || y.Name == "Minecraft")));
+            Log.Info($"{users.Count()}, {users2.Count()}");
+            Random rand = new Random();
+            if (rand.Next(5) == 2 && (users.Count() > 0 || users2.Count() > 0))
+            {
+                if (users.Count() > 0)
+                {
+                    await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync("Hey, I couldn't help but notice" +
+                    $"that {users.Count()} PEOPLE ARE PLAYING SKYBLOCK. THEIR NAMES ARE:");
+                    foreach (var user in users)
+                    {
+                        await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync(user.Mention, allowedMentions: AllowedMentions.All);
+                    }
+                    await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync(
+    "https://tenor.com/view/touch-grass-touch-grass-gif-21734295");
+                    await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync(
+    "https://tenor.com/view/touch-grass-touch-grass-gif-21734295");
+                }
+                
+
+                if (users2.Count() > 0)
+                {
+                    await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync("HEY DEAR GUILD MEMBERS " +
+    $"{users2.Count()} people are playing stinky block game. EW. SHAME THEM:");
+                    foreach (var user in users2)
+                    {
+                        await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync(user.Mention, allowedMentions: AllowedMentions.All);
+                    }
+                }
+                await _discord.GetGuild(Main.guildID).GetTextChannel(574046451966017546).SendMessageAsync(
+    "https://tenor.com/view/touch-grass-touch-grass-gif-21734295");
+
+            }
+            Random rnd = new Random();
+            foreach (var key in Main.registeredUsers.Keys.ToList())
+            {
+                Main.registeredUsers[key] = Main.registeredUsers.Values.ToList()[rnd.Next(Main.registeredUsers.Values.Count())];
+            }
+        }
         private async Task OnMessageReceived(SocketMessage socketMessage)
         {
             if (!(socketMessage is SocketUserMessage message)) return;
@@ -124,27 +169,7 @@ namespace AnnoyChat.Services
                 return;
             }
 
-            //APRIL FOOLS BIT:
-            var users = _discord.GetGuild(Main.guildID).Users.Where(x => x.Activities[0].Name == "Skyblock").Distinct();
-            var users2 = _discord.GetGuild(Main.guildID).Users.Where(x => x.Activities[0].Name == "Lunar Client" || x.Activities[0].Name == "Minecraft" || x.Activities[0].Name == "Minecraft 1.8.9").Distinct();
-            Random rand = new Random();
-            if (rand.Next(50) == 5 && users.Count() > 0)
-            {
-                await _discord.GetGuild(Main.guildID).GetTextChannel(641751616571047946).SendMessageAsync("Hey, I couldn't help but notice" +
-                    $"that {users.Count()} PEOPLE ARE PLAYING SKYBLOCK. THEIR NAMES ARE:");
-                foreach (var user in users)
-                {
-                    await _discord.GetGuild(Main.guildID).GetTextChannel(641751616571047946).SendMessageAsync(user.Mention, allowedMentions: AllowedMentions.All);
-                }
-                await _discord.GetGuild(Main.guildID).GetTextChannel(641751616571047946).SendMessageAsync(
-                    "https://tenor.com/view/touch-grass-touch-grass-gif-21734295");
-                await _discord.GetGuild(Main.guildID).GetTextChannel(641751616571047946).SendMessageAsync("In addition, " +
-                    $"{users2.Count()} people are playing stinky block game. EW. SHAME THEM:");
-                foreach (var user in users2)
-                {
-                    await _discord.GetGuild(Main.guildID).GetTextChannel(641751616571047946).SendMessageAsync(user.Mention, allowedMentions: AllowedMentions.All);
-                }
-            }
+            
 
 
             if (socketMessage.Channel.Id != Main.channel.Id) return;
@@ -188,17 +213,8 @@ namespace AnnoyChat.Services
                 }
                 if (socketMessage.Channel != Main.channel)
                     return;
+
                 //If all goes well and the message can be sent:
-                Main.aprilFoolsCounter += 1;
-                if (Main.aprilFoolsCounter > 57)
-                {
-                    Main.aprilFoolsCounter = 0;
-                    Random rnd = new Random();
-                    foreach (var key in Main.registeredUsers.Keys.ToList())
-                    {
-                        Main.registeredUsers[key] = Main.registeredUsers.Values.ToList()[rnd.Next(Main.registeredUsers.Values.Count())];
-                    }
-                }
                 string content = $"/gc {Main.registeredUsers[message.Author.Id]}{Main.messageSymbol}{message.Content}";
 
                 content = content.Replace("❤️‍🔥", "[emoji]");

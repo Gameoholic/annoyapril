@@ -13,6 +13,6 @@ botMaintainerID: 272753984840663040
 #The emoji that the bot reacts to a message that has failed to send with. Can l$
 messageFailedToSendEmoji: 🚫
 #The symbol that gets sent in the message. For example: Gameoholic: test OR Gam$
-messageSymbol:  >
+messageSymbol:  > 
 #The role that has access to the channel. If everyone can access it, leave as '$
 canViewChannelRoleID: 574043487108857867
